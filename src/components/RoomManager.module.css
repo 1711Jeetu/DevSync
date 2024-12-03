@@ -1,0 +1,66 @@
+#roomJoinCard {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+    border-radius: 20px;
+    background-color: #ffffff;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    margin-top: 20px;
+    width: 100%;
+    max-width: 400px; 
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+#roomJoinCard:hover {
+    transform: scale(1.02);
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
+}
+
+.mainContent {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin-top: 20vh;
+    width: 100%;
+    
+}
+
+.marginTop10px {
+    margin-top: 10px;
+    text-align: center;
+}
+
+.flexColumn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+}
+
+/* h2 {
+    margin-bottom: 20px;
+    color: #333;
+    font-size: 1.5rem;
+}
+
+button {
+    margin-top: 20px;
+    width: 100%;
+}
+
+button:hover {
+    background-color: #3f51b5;
+    
+} */
+
+/* input,
+textarea {
+    width: 100%;
+    max-width: 400px;
+} */
+
+.textField {
+    margin-bottom: 15px; 
+}
