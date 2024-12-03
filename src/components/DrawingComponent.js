@@ -2,13 +2,33 @@ import React, { useRef, useState } from "react";
 import { ReactSketchCanvas } from "react-sketch-canvas";
 import { ResizableBox } from "react-resizable";
 import "react-resizable/css/styles.css";
+import { ref, set, remove } from "firebase/database";
+import { database } from "../utils/firebaseConfig";
+import { Avatar } from "@mui/material";
 
-const DrawingComponent = () => {
+const DrawingComponent = ({ value, currentUserName,roomId }) => {
   const canvasRef = useRef(null);
   const [canvasSize, setCanvasSize] = useState({ width: 300, height: 300 });
   const [selectedColor, setSelectedColor] = useState("#000000");
   const [strokeWidth, setStrokeWidth] = useState(4);
   const [isEraser, setIsEraser] = useState(false);
+  const iscreater = value.creater === currentUserName;
+
+  const handleDelete = async (e) => {
+    if (!iscreater) {
+        alert("You cannot delete this window.");
+        return;
+    }
+    try {
+        const windowRef = ref(database, `rooms/${roomId}/windows/${value.id}`);
+        await remove(windowRef);
+
+    }
+    catch (error) {
+        console.error("Error deleting card:", error);
+        alert("Failed to delete the card");
+    }
+}
 
   const handleColorChange = (e) => {
     setSelectedColor(e.target.value);
@@ -46,7 +66,25 @@ const DrawingComponent = () => {
 ;
 
   return (
-    <div style={{ padding: "10px", border: "1px solid #ccc", borderRadius: "8px" }}>
+
+    <div className="card resizable-card border-0">
+    <div className="card-body">
+        <div className="mb-2">
+            <strong style={{ display: "inline-block" }}><Avatar /></strong> <span id="userId" style={{ position: "relative", top: "-10px", left: "4px" }}>{value?.creater}</span>
+            <button onClick={(e) => {
+                handleDelete(e);
+            }
+            } style={{ backgroundColor: "transparent", color: "red", border: "none", cursor: "pointer", float: "right" }}>
+                <i class="fa-solid fa-trash fa-xl"></i>
+            </button>
+
+        
+       
+                
+            </div>
+        <hr />
+
+        <div style={{ padding: "10px", border: "1px solid #ccc", borderRadius: "8px" }}>
       <ResizableBox
         width={canvasSize.width}
         height={canvasSize.height}
@@ -100,6 +138,9 @@ const DrawingComponent = () => {
       
       </div>
     </div>
+    </div>
+</div>
+    
   );
 };
 

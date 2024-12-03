@@ -7,14 +7,14 @@ import ParentComponent from "./ParentComponent";
 import ChildrenComponent from "./ChildrenComponent";
 import "../App.css"
 import Button from '@mui/material/Button';
-import ButtonGroup from '@mui/material/ButtonGroup';
-import ExitToAppIcon from '@mui/icons-material/ExitToApp';
+
 
 function App() {
 
     const [childrenData, setChildrenData] = useState([]);
     const [username, setUsername] = useState("");
     const [roomId, setRoomId] = useState('');
+
 
     useEffect(() => {
         // Generate a username if it doesn't exist
@@ -37,7 +37,7 @@ function App() {
                 if (data) {
                     const parsedData = Object.entries(data).map(([id, value]) => ({
                         id, content: { content: value.content },
-                        creater: value.creater, locked: value.locked
+                        creater: value.creater, locked: value.locked, typeOfNode : value.typeOfNode
                     }));
                     setChildrenData(parsedData);
                     
@@ -58,7 +58,7 @@ function App() {
             if (data) {
                 const parsedData = Object.entries(data).map(([id, value]) => ({
                     id, content: { content: value.content },
-                    creater: value.creater, locked: value.locked
+                    creater: value.creater, locked: value.locked, typeOfNode : value.typeOfNode
                 }));
                 setChildrenData(parsedData);
             }
@@ -67,15 +67,14 @@ function App() {
         return () => off(windowRef);
     }, [roomId]);
 
-    const createWindow = () => {
+   function createWindow(node){
         if (!roomId) {
             alert("first join a room");
             return;
         }
-
         const windowRef = ref(database, `rooms/${roomId}/windows`);
         const newWindowRef = push(windowRef);
-        const newWindowData = { id: newWindowRef.key, content: "", creater: username, locked: true };
+        const newWindowData = { id: newWindowRef.key, content: "", creater: username, locked: true,typeOfNode : node };
         set(newWindowRef, newWindowData);
     };
 
@@ -96,12 +95,7 @@ function App() {
                     <div className="right"><Button onClick={() => setRoomId(null)} style={{float:"right",display:"inline-block",color:"red"}}><i class="fa-solid fa-arrow-right-to-bracket fa-2xl"></i></Button></div>
                     </header>
                     <hr/>
-                    
-                    
-                    
-        
-        
-      
+     
                     <ParentComponent addComponent={createWindow}>
                         {childrenData.map((data) => (
                             <ChildrenComponent
@@ -109,6 +103,7 @@ function App() {
                                 value={data}
                                 currentUserName={username}
                                 roomId={roomId}
+                                TypeOfNode = {data.typeOfNode}
                             />
                         ))}
                     </ParentComponent>
@@ -118,7 +113,7 @@ function App() {
             
 
         </div>
-        <footer style={{position: "fixed",bottom:0,textAlign:"center",justifyContent:"center",width:"100%",backgroundColor:"#333",color:"white",fontSize:"large",fontFamily:"Courier new"}}>Made by Hiren Khatri,Styled by manish ghindwani and sourav mitrani
+        <footer style={{position: "fixed",bottom:0,textAlign:"center",justifyContent:"center",width:"100%",backgroundColor:"#333",color:"white",fontSize:"large",fontFamily:"Courier new"}}>Made by Hiren Khatri,Sagar kukreja,Akshay ahuja Styled by manish ghindwani and sourav mitrani
             honourable mention jeetu mamtora
         </footer>
         </>
