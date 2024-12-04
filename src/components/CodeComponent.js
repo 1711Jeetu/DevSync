@@ -30,10 +30,7 @@ function CodeComponent({ value, currentUserName, roomId }) {
     };
 
     const handleEditorChange = () => {
-        if (!iscreater && value.locked) {
-            alert("You cannot edit this content as the window is locked.");
-            return;
-        }
+        
         const windowRef = ref(database, `rooms/${roomId}/windows/${value.id}`);
         set(windowRef, { id: value.id, content: editorRef.current.getValue(), creater: value.creater, locked: value.locked, typeOfNode: value.typeOfNode });
     }

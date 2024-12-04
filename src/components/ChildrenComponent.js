@@ -11,7 +11,7 @@ const ChildrenComponent = ({ value, currentUserName, roomId, TypeOfNode }) => {
 
     return (
        
-        <DraggableComponent handle=".card-header">
+        <DraggableComponent handle=".user-info">
                     {(() => {
                         if (TypeOfNode === "Text") {
                             return <TextComponent
