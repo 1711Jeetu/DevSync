@@ -104,7 +104,7 @@ function TextComponent({ value, currentUserName,roomId }) {
                 
                 <ReactQuill
                     
-                    value={quillContent}
+                    value={value?.content?.content}
                     onChange={handleQuillChange}
                     theme="snow"
                     readOnly={!iscreater && value.locked}

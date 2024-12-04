@@ -36,91 +36,207 @@
     transform: rotate(360deg);
   }
 } */
-
+/* Resizable Card */
 .resizable-card {
   resize: both;
   overflow: auto;
-  width: fit-content;
+  width: 100%;
+  max-width: 100%;
+  height: 100%;
   border: 1px solid #ddd;
   border-radius: 8px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   position: relative;
-}
-.card-header {
   display: flex;
-  align-items: center;
-  justify-content: space-between;
-  position: absolute;
-  top: 10px;
-  right: 10px;
-  left: 10px;
-  margin-bottom: 60px;
+  flex-direction: column;
+  padding: 10px;
+  box-sizing: border-box;
 }
 
+/* Card Header */
+.card-header {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  position: relative;
+  width: 100%;
+  margin-bottom: 10px;
+}
+
+/* User Info Styling */
 .user-info {
   display: flex;
   align-items: center;
-  margin-right: 50px;
+  justify-content: flex-start;
+  margin-right: 20px;
 }
+
 .user-info .MuiFormControlLabel-root {
-  margin-left: 20px;  /* Adjust this value to shift the switch to the right */
+  margin-left: 15px;
 }
 
 .user-name {
   margin-left: 8px;
-  
 }
 
+/* Action Buttons Styling */
 .action-buttons button {
   background-color: transparent;
   border: none;
   cursor: pointer;
   margin-right: 10px;
+  font-size: 1.1rem;
 }
 
 .action-buttons button:last-child {
   margin-right: 0;
 }
 
+/* Card Content */
 .card-content {
-  margin-top: 80px; 
-}
-.form-select {
-  margin-bottom: 10px;
-}
-.react-draggable
-{
-  display: inline-block;
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  margin-top: 10px;
 }
 
-select{
-  padding: 10px 10px;
+/* Editor Container */
+.editor-container {
+  flex-grow: 1;
+  height: 80%;
+}
+
+/* Output Container */
+.output-container {
+  height: 20%;
+  overflow-y: auto;
+  margin-top: 10px;
+}
+
+/* Editor Styling */
+.resizable-editor {
+  width: 100%;
+  height: 100%;
+}
+
+/* Select Dropdown and Play Button Styling */
+select {
+  padding: 8px;
   border: none;
   border-radius: 4px;
   background-color: transparent;
   margin-bottom: 10px;
-  
+  width: 100%;
 }
-header
-{
+
+button {
+  border: none;
+  background-color: transparent;
+  cursor: pointer;
+  margin: 0;
+}
+
+button i {
+  font-size: 1.2rem;
+}
+
+header {
   background-color: #333;
   color: aliceblue;
   display: flex !important;
   flex-direction: row;
   flex-wrap: nowrap;
 }
-.left{
-  flex:33%;
-}
-.middle{
-  flex:33%;
-  align-items: center; 
-  text-align: center; 
-  font-size: x-large;
 
-  
+.left,
+.middle,
+.right {
+  flex: 33%;
 }
-.right{
-  flex:33%;
+
+.middle {
+  text-align: center;
 }
+
+/* Responsive Styles */
+@media screen and (max-width: 768px) {
+  /* Card Header Adjustments */
+  .card-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .user-info {
+    margin-bottom: 10px;
+  }
+
+  .action-buttons {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+  }
+
+  .action-buttons button {
+    margin-right: 8px;
+    font-size: 1rem; /* Smaller button size for mobile */
+  }
+
+  .card-content {
+    margin-top: 20px;
+  }
+
+  /* Editor and Output Height */
+  .editor-container {
+    height: 70%;
+  }
+
+  .output-container {
+    height: 30%;
+  }
+
+  /* Make the select and buttons stack properly */
+  select {
+    width: 100%;
+    padding: 10px;
+  }
+
+  .resizable-editor {
+    height: 100%;
+  }
+}
+
+
+@media screen and (max-width: 480px) {
+  .resizable-card {
+    padding: 5px; /* Less padding on smaller screens */
+  }
+
+  .action-buttons button {
+    margin-right: 5px;
+    font-size: 1rem;
+  }
+
+  .user-info .MuiFormControlLabel-root {
+    margin-left: 10px; /* Adjust space for switch */
+  }
+
+  .card-header {
+    margin-bottom: 10px;
+  }
+
+  .card-content {
+    margin-top: 15px;
+  }
+
+  /* Adjust height distribution for smaller screens */
+  .editor-container {
+    height: 65%; /* Decrease height of editor */
+  }
+
+  .output-container {
+    height: 35%; /* Increase output height */
+  }
+} 
+
 

@@ -56,8 +56,7 @@ function CodeComponent({ value, currentUserName, roomId }) {
 
     const handleLanguageChange = (event) => {
         setLanguage(event.target.value);
-        console.log(languageSettings[language]);
-        console.log(languageSettings);
+ 
     };
 
     const toggleLock = () => {
@@ -189,17 +188,18 @@ function CodeComponent({ value, currentUserName, roomId }) {
 
             
             <Editor
+                value={value?.content?.content}
                 automaticLayout
                 height={"60%"}
                 language={language}
                 theme={theme}
-                defaultValue={value?.content?.content}
                 onChange={handleEditorChange}
                 onMount={handleEditorDidMount}
                 options={{
                     readOnly: !iscreater && value.locked, // Makes the editor read-only for non-creators when locked
                 }}
             />
+            
 
             {/* Output */}
             <div>

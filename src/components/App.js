@@ -41,6 +41,7 @@ function App() {
                     }));
                     setChildrenData(parsedData);
                     
+                    
                 }
             } catch (error) {
                 console.error("Error fetching data: ", error);
@@ -61,6 +62,7 @@ function App() {
                     creater: value.creater, locked: value.locked, typeOfNode : value.typeOfNode
                 }));
                 setChildrenData(parsedData);
+                
             }
         });
 
@@ -92,7 +94,7 @@ function App() {
                     <header>
                     <div className="left"><span><h2 style={{display:"inline-block"}}>Room: {roomId}</h2></span></div>
                     <div className="middle">DevSync</div>
-                    <div className="right"><Button onClick={() => setRoomId(null)} style={{float:"right",display:"inline-block",color:"red"}}><i class="fa-solid fa-arrow-right-to-bracket fa-2xl"></i></Button></div>
+                    <div className="right"><Button onClick={() => setRoomId(null)} style={{float:"right",display:"inline-block",color:"red"}}><i className="fa-solid fa-arrow-right-to-bracket fa-2xl"></i></Button></div>
                     </header>
                     <hr/>
      
