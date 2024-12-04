@@ -4,8 +4,12 @@ import { database } from "../utils/firebaseConfig";
 import axios from "axios";
 import { Avatar } from "@mui/material";
 import { Editor } from "@monaco-editor/react";
+import { FormGroup, FormControlLabel } from "@mui/material";
+import MaterialUISwitch from "./CustomizedSwitch";
+import Tooltip from '@mui/material/Tooltip';
 
-function CodeComponent({ value, currentUserName,roomId }) {
+
+function CodeComponent({ value, currentUserName, roomId }) {
     const editorRef = useRef(null);
     const [language, setLanguage] = useState("python");
     const [output, setOutput] = useState("");
@@ -31,7 +35,7 @@ function CodeComponent({ value, currentUserName,roomId }) {
             return;
         }
         const windowRef = ref(database, `rooms/${roomId}/windows/${value.id}`);
-        set(windowRef, { id: value.id, content: editorRef.current.getValue(), creater: value.creater, locked: value.locked, typeOfNode : value.typeOfNode });
+        set(windowRef, { id: value.id, content: editorRef.current.getValue(), creater: value.creater, locked: value.locked, typeOfNode: value.typeOfNode });
     }
 
     const handleDelete = async (e) => {
@@ -63,7 +67,7 @@ function CodeComponent({ value, currentUserName,roomId }) {
         }
 
         const windowRef = ref(database, `rooms/${roomId}/windows/${value.id}`);
-        set(windowRef, { id: value.id, content: value.content.content, creater: value.creater, locked: !value.locked, typeOfNode : value.typeOfNode });
+        set(windowRef, { id: value.id, content: value.content.content, creater: value.creater, locked: !value.locked, typeOfNode: value.typeOfNode });
     };
 
     const handleCopy = () => {
@@ -98,81 +102,114 @@ function CodeComponent({ value, currentUserName,roomId }) {
         }
     };
 
-    const toggleSettings = () => {
-        setIsSettingsOpen(!isSettingsOpen);
+
+    const handleThemeChange = (event) => {
+        setTheme(event.target.checked ? "vs-dark" : "light");
     };
 
     return (
         <div className="card resizable-card border-0">
-            <div className="card-body">
-                <div className="mb-2">
-                    <strong style={{ display: "inline-block" }}><Avatar /></strong> <span id="userId" style={{ position: "relative", top: "-10px", left: "4px" }}>{value?.creater}</span>
-                    <button onClick={(e) => {
-                        handleDelete(e);
+    <div className="card-body">
+        {/* Header Section */}
+        <div className="card-header">
+            {/* Left Section: User Info and Switch */}
+            <div className="user-info">
+                
+                <Avatar />
+                <span id="userId" className="user-name">{value?.creater}</span>
+                
+                {/* Dark Mode Switch */}
+                <FormControlLabel
+                    control={
+                        <MaterialUISwitch
+                            checked={theme === "vs-dark"}
+                            onChange={handleThemeChange}
+                        />
                     }
-                    } style={{ backgroundColor: "transparent", color: "red", border: "none", cursor: "pointer", float: "right" }}>
-                        <i class="fa-solid fa-trash fa-xl"></i>
-                    </button>
+                    label="Dark Mode"
+                />
+            </div>
 
-                </div>
-                <button onClick={handleCopy} style={{ backgroundColor: "transparent", border: "none", float: "right" }}><i class="fa-solid fa-copy fa-xl"></i></button>
-                <br />
-                <button onClick={toggleLock} style={{ backgroundColor: "transparent", border: "none" }}>
-                    {value.locked ? <i class="fa-solid fa-lock fa-lg"></i> : <i class="fa-solid fa-lock-open fa-lg"></i>}
+            {/* Right Section: Buttons */}
+            <div className="action-buttons">
+                 <Tooltip title="Delete">
+                 <button onClick={handleDelete}>
+                    <i className="fa-solid fa-trash fa-xl" style={{ color: "red" }}></i>
                 </button>
-                <button onClick={toggleSettings} style={{ float: "right", border: "none", backgroundColor: "transparent" }}>
-                    <i className="fa-solid fa-gear fa-lg"></i>
+                 </Tooltip>
+                
+                <Tooltip title="copy to clipboard">
+                <button onClick={handleCopy}>
+                    <i className="fa-solid fa-copy fa-xl"></i>
                 </button>
-                {isSettingsOpen && (
-                    <div style={{
-                        position: "absolute",
-                        top: "50px",
-                        right: "10px",
-                        width: "200px",
-                        backgroundColor: "#f9f9f9",
-                        padding: "10px",
-                        borderRadius: "4px",
-                        boxShadow: "0 2px 6px rgba(0,0,0,0.2)",
-                    }}>
-                        <h5>Settings</h5>
-                        <label>Font Size:</label>
-                        <label>Theme:</label>
-                        <select value={theme} onChange={(e) => setTheme(e.target.value)}>
-                            <option value="vs-dark">Dark</option>
-                            <option value="light">Light</option>
-                        </select>
-                        <button onClick={toggleSettings}>Close</button>
-                    </div>
-                )}
-                <hr />
-                <>
-                    <select onChange={handleLanguageChange} value={language} >
-                        <option value="python">Python</option>
-                        <option value="java">Java</option>
-                        <option value="csharp">C#</option>
-                        <option value="cpp">C++</option>
-                        <option value="c">C</option>
-                    </select>
-                    <button onClick={executeCode} style={{ border: "none", backgroundColor: "transparent", float: "right", marginRight: "4px", marginBottom: "4px", color: "rgb(49, 150, 38)" }}><i class="fa-solid fa-play fa-xl"></i></button>
-                    <Editor
-                        automaticLayout
-                        language={language}
-                        theme={theme}
-                        defaultValue={value?.content?.content}
-                        onChange={handleEditorChange}
-                        onMount={handleEditorDidMount}
-                        
-                    />
-                    <div>
-                        <span>Output:</span>
-                        <pre>{output}</pre>
-                    </div>
-                </>
 
+                </Tooltip>
+                
+                <Tooltip title="Lock Window">
+                <button onClick={toggleLock}>
+                    {value.locked ? (
+                        <i className="fa-solid fa-lock fa-lg"></i>
+                    ) : (
+                        <i className="fa-solid fa-lock-open fa-lg"></i>
+                    )}
+                </button>
 
-
+                </Tooltip>
+                
             </div>
         </div>
+
+        
+        
+            <hr style={{marginTop:"60px",paddingTop:"10px",visibility:"hidden"}}/>
+
+            
+            <>
+                <select onChange={handleLanguageChange} value={language}>
+                    <option value="python">Python</option>
+                    <option value="java">Java</option>
+                    <option value="csharp">C#</option>
+                    <option value="cpp">C++</option>
+                    <option value="c">C</option>
+                </select>
+                <button
+                    onClick={executeCode}
+                    style={{
+                        border: "none",
+                        backgroundColor: "transparent",
+                        float: "right",
+                        marginRight: "4px",
+                        marginBottom: "4px",
+                        color: "rgb(49, 150, 38)",
+                    }}
+                >
+                    <i className="fa-solid fa-play fa-xl"></i>
+                </button>
+            </>
+
+            
+            <Editor
+                automaticLayout
+                height={"60%"}
+                language={language}
+                theme={theme}
+                defaultValue={value?.content?.content}
+                onChange={handleEditorChange}
+                onMount={handleEditorDidMount}
+                options={{
+                    readOnly: !iscreater && value.locked, // Makes the editor read-only for non-creators when locked
+                }}
+            />
+
+            {/* Output */}
+            <div>
+                <span>Output:</span>
+                <pre>{output}</pre>
+            </div>
+        
+    </div>
+</div>
+
     )
 }
 
