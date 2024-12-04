@@ -94,9 +94,12 @@ function App() {
                     <header>
                     <div className="left"><span><h2 style={{display:"inline-block"}}>Room: {roomId}</h2></span></div>
                     <div className="middle">DevSync</div>
-                    <div className="right"><Button onClick={() => setRoomId(null)} style={{float:"right",display:"inline-block",color:"red"}}><i className="fa-solid fa-arrow-right-to-bracket fa-2xl"></i></Button></div>
+                    <div className="right"><Button onClick={() => setRoomId(null)} style={{float:"right",display:"inline-block"}}><i className="fa-solid fa-arrow-right-to-bracket fa-2xl"></i></Button></div>
                     </header>
                     <hr/>
+
+                    {/*left panel for storing the windows*/}
+                    
      
                     <ParentComponent addComponent={createWindow}>
                         {childrenData.map((data) => (

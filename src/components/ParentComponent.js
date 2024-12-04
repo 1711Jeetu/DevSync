@@ -10,7 +10,7 @@ const ParentComponent = ({ children, addComponent }) => {
   return (
     
     <div>    
-      <DropdownButton id="dropdown-basic-button" title="Add">
+      <DropdownButton id="dropdown-basic-button" title="Add" className="add-button">
       <Dropdown.Item onClick={() => {addComponent("Text")}}>Text editor</Dropdown.Item>
       <Dropdown.Item onClick={() => {addComponent("Code")}}>Code editor</Dropdown.Item>
       <Dropdown.Item onClick={() => {addComponent("Canvas")}}>Canvas</Dropdown.Item>

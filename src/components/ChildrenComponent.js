@@ -8,10 +8,12 @@ import CodeComponent from "./CodeComponent";
 
 const ChildrenComponent = ({ value, currentUserName, roomId, TypeOfNode }) => {
 
+    
+
 
     return (
        
-        <DraggableComponent handle=".user-info">
+        <DraggableComponent handle=".dragging">
                     {(() => {
                         if (TypeOfNode === "Text") {
                             return <TextComponent

@@ -7,6 +7,7 @@ import "react-quill/dist/quill.snow.css"
 import Tooltip from '@mui/material/Tooltip';
 
 
+
 function TextComponent({ value, currentUserName,roomId }) {
 
     const [quillContent, setQuillContent] = useState(value?.content?.content || "");
@@ -70,10 +71,17 @@ function TextComponent({ value, currentUserName,roomId }) {
             </div>
 
             {/* Right Section: Buttons */}
+            
             <div className="action-buttons">
+            <Tooltip title="Drag">
+                <div className="dragging" style={{display:"inline-block",marginRight:"10px"}}>
+                <i className="fa-solid fa-arrows-up-down-left-right fa-xl"></i>
+                </div>
+            </Tooltip>
+            
             <Tooltip title="Delete">
                  <button onClick={handleDelete}>
-                    <i className="fa-solid fa-trash fa-xl" style={{ color: "red" }}></i>
+                    <i className="fa-solid fa-trash fa-xl" ></i>
                 </button>
                  </Tooltip>
                 

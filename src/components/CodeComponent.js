@@ -128,9 +128,14 @@ function CodeComponent({ value, currentUserName, roomId }) {
 
             {/* Right Section: Buttons */}
             <div className="action-buttons">
+            <Tooltip title="Drag">
+                <div className="dragging" style={{display:"inline-block",marginRight:"10px"}}>
+                <i className="fa-solid fa-arrows-up-down-left-right fa-xl"></i>
+                </div>
+            </Tooltip>
                  <Tooltip title="Delete">
                  <button onClick={handleDelete}>
-                    <i className="fa-solid fa-trash fa-xl" style={{ color: "red" }}></i>
+                    <i className="fa-solid fa-trash fa-xl" ></i>
                 </button>
                  </Tooltip>
                 
@@ -199,7 +204,7 @@ function CodeComponent({ value, currentUserName, roomId }) {
             
 
             {/* Output */}
-            <div>
+            <div className="output-container">
                 <span>Output:</span>
                 <pre>{output}</pre>
             </div>

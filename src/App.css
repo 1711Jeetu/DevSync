@@ -37,20 +37,56 @@
   }
 } */
 /* Resizable Card */
+/* General Styling for the Resizable Card */
+/* General Styling for the Resizable Card */
+/* Define Variables for Better Maintainability */
+:root {
+  --background-color: #f8f9fa;
+  --text-color: #355070;
+  --primary-color: #355070;
+  --secondary-color: #e56b6f;
+}
+
+[data-theme="dark"] {
+  --background-color: #121212;
+  --text-color: #ffffff;
+  --primary-color: #b56576;
+  --secondary-color: #e56b6f;
+}
+
+body {
+  background-color: var(--background-color);
+  color: var(--text-color);
+}
+
+header {
+  background-color: var(--primary-color);
+  color: var(--text-color);
+}
+
+
+/* Resizable Card */
 .resizable-card {
   resize: both;
   overflow: auto;
   width: 100%;
   max-width: 100%;
   height: 100%;
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  border: 1px solid var(--text-color);
+  border-radius: 10px;
+  box-shadow: var(--box-shadow);
   position: relative;
-  display: flex;
+  display: flex !important;
   flex-direction: column;
-  padding: 10px;
+  padding: 15px;
   box-sizing: border-box;
+  background-color: var(--background-color);
+  transition: box-shadow 0.3s ease-in-out, transform 0.3s ease-in-out;
+}
+
+.resizable-card:hover {
+  box-shadow: 0 6px 10px rgba(0, 0, 0, 0.15); /* Slightly stronger shadow */
+  transform: scale(1.02); /* Small scale effect */
 }
 
 /* Card Header */
@@ -59,38 +95,43 @@
   flex-direction: row;
   align-items: center;
   justify-content: space-between;
-  position: relative;
   width: 100%;
-  margin-bottom: 10px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--text-color);
 }
 
-/* User Info Styling */
+.card-header strong {
+  font-size: 1.2rem;
+  color: var(--primary-color);
+}
+
+.card-header .action-buttons button {
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+  font-size: 1.2rem;
+  margin-right: 8px;
+  transition: all 0.3s ease-in-out;
+}
+
+.card-header .action-buttons button:hover {
+  transform: scale(1.1);
+  color: var(--secondary-color);
+}
+
+.card-header .action-buttons button:last-child {
+  margin-right: 0;
+}
+
+/* User Info */
 .user-info {
   display: flex;
   align-items: center;
-  justify-content: flex-start;
-  margin-right: 20px;
+  gap: 10px;
 }
 
 .user-info .MuiFormControlLabel-root {
   margin-left: 15px;
-}
-
-.user-name {
-  margin-left: 8px;
-}
-
-/* Action Buttons Styling */
-.action-buttons button {
-  background-color: transparent;
-  border: none;
-  cursor: pointer;
-  margin-right: 10px;
-  font-size: 1.1rem;
-}
-
-.action-buttons button:last-child {
-  margin-right: 0;
 }
 
 /* Card Content */
@@ -101,10 +142,54 @@
   margin-top: 10px;
 }
 
-/* Editor Container */
-.editor-container {
-  flex-grow: 1;
-  height: 80%;
+/* Dropdown & Button Styling */
+select {
+  padding: 10px;
+  border: 1px solid var(--text-color);
+  border-radius: 5px;
+  background-color: var(--background-color);
+  color: var(--primary-color);
+  font-size: 1rem;
+  margin-bottom: 10px;
+  width: 100%;
+  box-sizing: border-box;
+  transition: all 0.3s ease-in-out;
+}
+
+select:hover,
+select:focus {
+  border-color: var(--hover-color);
+}
+
+button {
+  border: none;
+  background-color: transparent;
+  cursor: pointer;
+}
+
+button i {
+  font-size: 1.3rem;
+  transition: color 0.3s ease-in-out, transform 0.3s ease-in-out;
+}
+
+button i:hover {
+  color: var(--hover-color);
+  transform: scale(1.1);
+}
+
+/* Resizable Editor */
+.resizable-editor {
+  width: 100%;
+  height: 100%;
+  border: 1px solid var(--text-color);
+  border-radius: 8px;
+  overflow: hidden;
+  transition: box-shadow 0.3s ease-in-out;
+}
+
+.resizable-editor:focus-within {
+  box-shadow: 0 0 8px rgba(53, 80, 112, 0.5);
+  outline: none;
 }
 
 /* Output Container */
@@ -112,56 +197,45 @@
   height: 20%;
   overflow-y: auto;
   margin-top: 10px;
+  padding: 10px;
+  border: 1px solid var(--text-color);
+  border-radius: 8px;
+  background-color: var(--background-color);
+  color: var(--text-color);
+  font-family: 'Courier New', Courier, monospace;
 }
 
-/* Editor Styling */
-.resizable-editor {
-  width: 100%;
-  height: 100%;
-}
-
-/* Select Dropdown and Play Button Styling */
-select {
-  padding: 8px;
-  border: none;
-  border-radius: 4px;
-  background-color: transparent;
-  margin-bottom: 10px;
-  width: 100%;
-}
-
-button {
-  border: none;
-  background-color: transparent;
-  cursor: pointer;
-  margin: 0;
-}
-
-button i {
-  font-size: 1.2rem;
-}
-
+/* Header */
 header {
-  background-color: #333;
-  color: aliceblue;
-  display: flex !important;
-  flex-direction: row;
-  flex-wrap: nowrap;
+  background-color: var(--primary-color);
+  color: #ffffff;
+  padding: 10px 15px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 2px solid var(--secondary-color);
 }
 
-.left,
-.middle,
-.right {
-  flex: 33%;
+header .left,
+header .middle,
+header .right {
+  flex: 1;
 }
 
-.middle {
+header .middle {
   text-align: center;
+  font-size: 1.5rem;
+  font-weight: bold;
 }
+
+
 
 /* Responsive Styles */
 @media screen and (max-width: 768px) {
-  /* Card Header Adjustments */
+  .resizable-card {
+    padding: 10px;
+  }
+
   .card-header {
     flex-direction: column;
     align-items: flex-start;
@@ -171,22 +245,10 @@ header {
     margin-bottom: 10px;
   }
 
-  .action-buttons {
-    display: flex;
-    flex-direction: row;
-    justify-content: flex-start;
-  }
-
-  .action-buttons button {
-    margin-right: 8px;
-    font-size: 1rem; /* Smaller button size for mobile */
-  }
-
   .card-content {
-    margin-top: 20px;
+    margin-top: 15px;
   }
 
-  /* Editor and Output Height */
   .editor-container {
     height: 70%;
   }
@@ -194,49 +256,33 @@ header {
   .output-container {
     height: 30%;
   }
-
-  /* Make the select and buttons stack properly */
-  select {
-    width: 100%;
-    padding: 10px;
-  }
-
-  .resizable-editor {
-    height: 100%;
-  }
 }
-
 
 @media screen and (max-width: 480px) {
   .resizable-card {
-    padding: 5px; /* Less padding on smaller screens */
+    padding: 5px;
   }
 
-  .action-buttons button {
+  .card-header {
+    flex-direction: column;
+  }
+
+  .card-header .action-buttons button {
     margin-right: 5px;
     font-size: 1rem;
   }
 
-  .user-info .MuiFormControlLabel-root {
-    margin-left: 10px; /* Adjust space for switch */
-  }
-
-  .card-header {
-    margin-bottom: 10px;
-  }
-
-  .card-content {
-    margin-top: 15px;
-  }
-
-  /* Adjust height distribution for smaller screens */
   .editor-container {
-    height: 65%; /* Decrease height of editor */
+    height: 65%;
   }
 
   .output-container {
-    height: 35%; /* Increase output height */
+    height: 35%;
   }
-} 
+}
+
+
+ 
+
 
 
