@@ -14,10 +14,7 @@ function TextComponent({ value, currentUserName,roomId }) {
 
 
     const handleQuillChange = (content) => {
-        if (!iscreater && value.locked) {
-            alert("You cannot edit this content as the window is locked.");
-            return;
-        }
+        
         setQuillContent(content);
         const windowRef = ref(database, `rooms/${roomId}/windows/${value.id}`);
         set(windowRef, { 
