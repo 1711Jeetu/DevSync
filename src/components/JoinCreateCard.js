@@ -38,7 +38,7 @@ const JoinCreateCard = ({ onRoomJoin, type }) => {
           <h2 className={styles.marginTop10px}>Join Room</h2>
           <TextField
             margin="normal"
-            id="outlined-basic"
+            id="outlined-basic-join-roomId"
             label="Room id"
             variant="outlined"
             value={roomId}
@@ -46,7 +46,7 @@ const JoinCreateCard = ({ onRoomJoin, type }) => {
           />
 
           <TextField
-            id="outlined-basic"
+            id="outlined-basic-join-roomPassword"
             label="password"
             type="password"
             variant="outlined"
@@ -72,7 +72,7 @@ const JoinCreateCard = ({ onRoomJoin, type }) => {
 
         <TextField
           margin="normal"
-          id="outlined-basic"
+          id="outlined-basic-create-roomId"
           label="New Room ID"
           variant="outlined"
           value={newRoomId}
@@ -80,7 +80,7 @@ const JoinCreateCard = ({ onRoomJoin, type }) => {
         />
 
         <TextField
-          id="outlined-basic"
+          id="outlined-basic-create-roomPassword"
           type="password"
           label="password"
           variant="outlined"
