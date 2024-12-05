@@ -115,15 +115,7 @@ function CodeComponent({ value, currentUserName, roomId }) {
                 <span id="userId" className="user-name">{value?.creater}</span>
                 
                 {/* Dark Mode Switch */}
-                <FormControlLabel
-                    control={
-                        <MaterialUISwitch
-                            checked={theme === "vs-dark"}
-                            onChange={handleThemeChange}
-                        />
-                    }
-                    label="Dark Mode"
-                />
+                
             </div>
 
             {/* Right Section: Buttons */}
@@ -162,10 +154,10 @@ function CodeComponent({ value, currentUserName, roomId }) {
 
         
         
-            <hr style={{marginTop:"60px",paddingTop:"10px",visibility:"hidden"}}/>
+           
 
-            
-            <>
+        <div className="card-content">
+            <div className="controls">
                 <select onChange={handleLanguageChange} value={language}>
                     <option value="python">Python</option>
                     <option value="java">Java</option>
@@ -173,6 +165,15 @@ function CodeComponent({ value, currentUserName, roomId }) {
                     <option value="cpp">C++</option>
                     <option value="c">C</option>
                 </select>
+                <FormControlLabel
+                    control={
+                        <MaterialUISwitch
+                            checked={theme === "vs-dark"}
+                            onChange={handleThemeChange}
+                        />
+                    }
+                    label="Theme"
+                />
                 <button
                     onClick={executeCode}
                     style={{
@@ -186,13 +187,13 @@ function CodeComponent({ value, currentUserName, roomId }) {
                 >
                     <i className="fa-solid fa-play fa-xl"></i>
                 </button>
-            </>
+            </div>
 
             
             <Editor
+                className="resizable-editor"
                 value={value?.content?.content}
                 automaticLayout
-                height={"60%"}
                 language={language}
                 theme={theme}
                 onChange={handleEditorChange}
@@ -208,6 +209,7 @@ function CodeComponent({ value, currentUserName, roomId }) {
                 <span>Output:</span>
                 <pre>{output}</pre>
             </div>
+        </div> 
         
     </div>
 </div>

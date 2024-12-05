@@ -6,15 +6,10 @@ import DropdownButton from 'react-bootstrap/DropdownButton';
 
 
 
-const ParentComponent = ({ children, addComponent }) => {
+const ParentComponent = ({ children}) => {
   return (
     
     <div>    
-      <DropdownButton id="dropdown-basic-button" title="Add" className="add-button">
-      <Dropdown.Item onClick={() => {addComponent("Text")}}>Text editor</Dropdown.Item>
-      <Dropdown.Item onClick={() => {addComponent("Code")}}>Code editor</Dropdown.Item>
-      <Dropdown.Item onClick={() => {addComponent("Canvas")}}>Canvas</Dropdown.Item>
-    </DropdownButton>
       <div>{children}</div>
     </div>
   );

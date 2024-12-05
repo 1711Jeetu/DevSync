@@ -59,9 +59,9 @@ body {
   color: var(--text-color);
 }
 
-header {
-  background-color: var(--primary-color);
-  color: var(--text-color);
+.react-draggable
+{
+  display: inline-block;
 }
 
 
@@ -86,7 +86,7 @@ header {
 
 .resizable-card:hover {
   box-shadow: 0 6px 10px rgba(0, 0, 0, 0.15); /* Slightly stronger shadow */
-  transform: scale(1.02); /* Small scale effect */
+
 }
 
 /* Card Header */
@@ -130,8 +130,9 @@ header {
   gap: 10px;
 }
 
-.user-info .MuiFormControlLabel-root {
-  margin-left: 15px;
+.MuiFormControlLabel-root {
+  margin-left: 25px;
+  padding-left: 10px;
 }
 
 /* Card Content */
@@ -140,6 +141,20 @@ header {
   flex-direction: column;
   flex-grow: 1;
   margin-top: 10px;
+  height: 75%;
+  min-height: 400px;
+
+}
+.card-content textarea{
+  flex: 1;
+  width: 100%; /* Full width */
+  height: 100%; /* Full height */
+  box-sizing: border-box; /* Includes padding and border in the size */
+  resize: none;
+  border: 1px solid #ddd;
+  padding: 10px;
+  border-radius: 4px;
+              
 }
 
 /* Dropdown & Button Styling */
@@ -151,7 +166,7 @@ select {
   color: var(--primary-color);
   font-size: 1rem;
   margin-bottom: 10px;
-  width: 100%;
+  width: 100px;
   box-sizing: border-box;
   transition: all 0.3s ease-in-out;
 }
@@ -178,31 +193,30 @@ button i:hover {
 }
 
 /* Resizable Editor */
-.resizable-editor {
-  width: 100%;
-  height: 100%;
-  border: 1px solid var(--text-color);
-  border-radius: 8px;
-  overflow: hidden;
-  transition: box-shadow 0.3s ease-in-out;
+.resizable-editor  {
+  flex: 7;               /* 70% of the card-content height */
+  border: 1px solid #ccc;
+  min-height: 250px;
 }
 
-.resizable-editor:focus-within {
-  box-shadow: 0 0 8px rgba(53, 80, 112, 0.5);
-  outline: none;
+.controls {
+  flex: 1;               /* 10% of the card-content height */
+  display: flex;         /* Use flexbox for the select and play button */
+  justify-content: space-between; /* Space between select and button */
+  align-items: center;   /* Center items vertically */
+  padding: 5px;          /* Optional spacing */
+  border: 1px solid #ccc; /* Optional styling for visualization */
+  max-height: fit-content;
 }
+
+
 
 /* Output Container */
 .output-container {
-  height: 20%;
-  overflow-y: auto;
-  margin-top: 10px;
-  padding: 10px;
-  border: 1px solid var(--text-color);
-  border-radius: 8px;
-  background-color: var(--background-color);
-  color: var(--text-color);
-  font-family: 'Courier New', Courier, monospace;
+  flex: 2;               /* 20% of the card-content height */
+  border: 1px solid #ccc; /* Optional styling for visualization */
+  padding: 10px;         /* Optional spacing inside the output */
+  max-height: fit-content;
 }
 
 /* Header */
@@ -210,10 +224,10 @@ header {
   background-color: var(--primary-color);
   color: #ffffff;
   padding: 10px 15px;
-  display: flex;
+  display: flex !important;
   align-items: center;
   justify-content: space-between;
-  border-bottom: 2px solid var(--secondary-color);
+  border-bottom: 2px solid ;
 }
 
 header .left,
@@ -221,13 +235,28 @@ header .middle,
 header .right {
   flex: 1;
 }
+header .left{
+  display: flex;
+  align-items: center;
+}
+header .right{
+ display: flex;
+ justify-content: flex-end;
+}
 
 header .middle {
   text-align: center;
   font-size: 1.5rem;
   font-weight: bold;
 }
-
+.add-button{
+  display: inline-block;
+ 
+}
+#dropdown-basic-button{
+  background-color: transparent;
+  border: none;
+}
 
 
 /* Responsive Styles */

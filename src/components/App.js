@@ -1,12 +1,14 @@
 import React, { useState, useEffect } from "react";
 import { database } from "../utils/firebaseConfig";
-import { ref, push, onValue, get, off,set} from "firebase/database";
+import { ref, push, onValue, get, off, set } from "firebase/database";
 import { generateUsername } from "../utils/usernameGenerator";
 import RoomManager from "./RoomManager";
 import ParentComponent from "./ParentComponent";
 import ChildrenComponent from "./ChildrenComponent";
 import "../App.css"
 import Button from '@mui/material/Button';
+import Dropdown from 'react-bootstrap/Dropdown';
+import DropdownButton from 'react-bootstrap/DropdownButton';
 
 
 function App() {
@@ -37,11 +39,11 @@ function App() {
                 if (data) {
                     const parsedData = Object.entries(data).map(([id, value]) => ({
                         id, content: { content: value.content },
-                        creater: value.creater, locked: value.locked, typeOfNode : value.typeOfNode
+                        creater: value.creater, locked: value.locked, typeOfNode: value.typeOfNode
                     }));
                     setChildrenData(parsedData);
-                    
-                    
+
+
                 }
             } catch (error) {
                 console.error("Error fetching data: ", error);
@@ -59,24 +61,24 @@ function App() {
             if (data) {
                 const parsedData = Object.entries(data).map(([id, value]) => ({
                     id, content: { content: value.content },
-                    creater: value.creater, locked: value.locked, typeOfNode : value.typeOfNode
+                    creater: value.creater, locked: value.locked, typeOfNode: value.typeOfNode
                 }));
                 setChildrenData(parsedData);
-                
+
             }
         });
 
         return () => off(windowRef);
     }, [roomId]);
 
-   function createWindow(node){
+    function createWindow(node) {
         if (!roomId) {
             alert("first join a room");
             return;
         }
         const windowRef = ref(database, `rooms/${roomId}/windows`);
         const newWindowRef = push(windowRef);
-        const newWindowData = { id: newWindowRef.key, content: "", creater: username, locked: true,typeOfNode : node };
+        const newWindowData = { id: newWindowRef.key, content: "", creater: username, locked: true, typeOfNode: node };
         set(newWindowRef, newWindowData);
     };
 
@@ -86,41 +88,48 @@ function App() {
 
     return (
         <>
-        <div className="App">
-            {!roomId ? (
-                <RoomManager onRoomJoin={handleRoomJoin} />
-            ) : (
-                <div>
-                    <header>
-                    <div className="left"><span><h2 style={{display:"inline-block"}}>Room: {roomId}</h2></span></div>
-                    <div className="middle">DevSync</div>
-                    <div className="right"><Button onClick={() => setRoomId(null)} style={{float:"right",display:"inline-block"}}><i className="fa-solid fa-arrow-right-to-bracket fa-2xl"></i></Button></div>
-                    </header>
-                    <hr/>
+            <div className="App">
+                {!roomId ? (
+                    <RoomManager onRoomJoin={handleRoomJoin} />
+                ) : (
+                    <div>
+                        <header>
+                            <div className="left"><span><h2 >Room: {roomId}</h2></span>
+                                <DropdownButton id="dropdown-basic-button" title="Add" className="add-button">
+                                    <Dropdown.Item onClick={() => { createWindow("Text") }}>Text editor</Dropdown.Item>
+                                    <Dropdown.Item onClick={() => { createWindow("Code") }}>Code editor</Dropdown.Item>
+                                    <Dropdown.Item onClick={() => { createWindow("Canvas") }}>Canvas</Dropdown.Item>
+                                </DropdownButton>
 
-                    {/*left panel for storing the windows*/}
-                    
-     
-                    <ParentComponent addComponent={createWindow}>
-                        {childrenData.map((data) => (
-                            <ChildrenComponent
-                                key={data.id}
-                                value={data}
-                                currentUserName={username}
-                                roomId={roomId}
-                                TypeOfNode = {data.typeOfNode}
-                            />
-                        ))}
-                    </ParentComponent>
-                </div>
-            )}
+                            </div>
+                            <div className="middle">DevSync</div>
+                            <div className="right"><Button onClick={() => setRoomId(null)} ><i className="fa-solid fa-arrow-right-to-bracket fa-2xl"></i></Button></div>
+                        </header>
+                        
 
-            
+                        {/*left panel for storing the windows*/}
 
-        </div>
-        <footer style={{position: "fixed",bottom:0,textAlign:"center",justifyContent:"center",width:"100%",backgroundColor:"#333",color:"white",fontSize:"large",fontFamily:"Courier new"}}>Made by Hiren Khatri,Sagar kukreja,Akshay ahuja Styled by manish ghindwani and sourav mitrani
-            honourable mention jeetu mamtora
-        </footer>
+
+                        <ParentComponent >
+                            {childrenData.map((data) => (
+                                <ChildrenComponent
+                                    key={data.id}
+                                    value={data}
+                                    currentUserName={username}
+                                    roomId={roomId}
+                                    TypeOfNode={data.typeOfNode}
+                                />
+                            ))}
+                        </ParentComponent>
+                    </div>
+                )}
+
+
+
+            </div>
+            <footer style={{ position: "fixed", bottom: 0, textAlign: "center", justifyContent: "center", width: "100%", backgroundColor: "#333", color: "white", fontSize: "large", fontFamily: "Courier new" }}>under Development<br/>
+                report issues at:<a href="https://github.com/HirenKhatri7/DevSync">github</a>
+            </footer>
         </>
     );
 }
