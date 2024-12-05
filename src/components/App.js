@@ -31,6 +31,10 @@ function App() {
     }, [roomId]);
 
     useEffect(() => {
+        const storedRoomId = localStorage.getItem("roomId");
+        if(storedRoomId){
+            setRoomId(storedRoomId)
+        }
         if (!roomId) return;
         const fetchData = async () => {
             try {
@@ -53,6 +57,10 @@ function App() {
     }, [roomId]);
 
     useEffect(() => {
+        const storedRoomId = localStorage.getItem("roomId");
+        if(storedRoomId){
+            setRoomId(storedRoomId)
+        }
         if (!roomId) return;
         const windowRef = ref(database, `rooms/${roomId}/windows`);
 
@@ -84,6 +92,7 @@ function App() {
 
     const handleRoomJoin = (selectedRoomId) => {
         setRoomId(selectedRoomId);
+        localStorage.setItem("roomId", selectedRoomId);
     };
 
     return (
@@ -103,7 +112,9 @@ function App() {
 
                             </div>
                             <div className="middle">DevSync</div>
-                            <div className="right"><Button onClick={() => setRoomId(null)} ><i className="fa-solid fa-arrow-right-to-bracket fa-2xl"></i></Button></div>
+                            <div className="right"><Button onClick={() => {setRoomId(null);
+                                localStorage.removeItem("roomId");
+                            }} ><i className="fa-solid fa-arrow-right-to-bracket fa-2xl"></i></Button></div>
                         </header>
                         
 
