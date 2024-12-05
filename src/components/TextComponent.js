@@ -47,7 +47,7 @@ function TextComponent({ value, currentUserName, roomId }) {
     const windowRef = ref(database, `rooms/${roomId}/windows/${value.id}`);
     set(windowRef, {
       id: value.id,
-      content: textContent,
+      content: value?.content?.content,
       creater: value.creater,
       locked: !value.locked,
       typeOfNode: value.typeOfNode,
