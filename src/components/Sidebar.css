@@ -1,0 +1,59 @@
+/* Sidebar container */
+.sidebar {
+    position: fixed;
+    top: 13;
+    left: -250px; /* Hidden by default */
+    width: 250px;
+    height: calc(100% - 115px); /* Adjust the height to leave space for footer (50px) */
+    bottom: 54px; /* Full height */
+    background-color: var(--primary-color); /* Use primary color from root */
+    color: var(--background-color); /* Text color from root */
+    overflow-x: hidden; /* Disable horizontal scroll */
+    transition: 0.3s; /* Smooth sliding effect */
+    padding: 15px;
+    z-index: 1000; /* Stay on top of other content */
+    
+}
+  
+/* Sidebar visible */
+.sidebar.open {
+    left: 0; /* Slide into view */
+}
+  
+/* Sidebar links */
+.sidebar ul {
+    list-style: none;
+    padding: 0;
+}
+  
+.sidebar ul li {
+    margin: 20px 0;
+}
+  
+.sidebar ul li a {
+    color: var(--background-color); /* Text color from root */
+    text-decoration: none;
+    font-size: 18px;
+}
+  
+.sidebar ul li a:hover {
+    text-decoration: underline;
+    color: var(--secondary-color); /* Change color on hover */
+}
+  
+/* Toggle button */
+.toggle-button {
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    padding: 10px 15px;
+    background-color: var(--primary-color); /* Primary color for button */
+    color: var(--background-color); /* Text color */
+    border: none;
+    cursor: pointer;
+    z-index: 1100; /* Stay above sidebar */
+}
+  
+.toggle-button:hover {
+    background-color: var(--secondary-color); /* Hover effect for button */
+}

@@ -6,7 +6,7 @@ import CodeComponent from "./CodeComponent";
 
 
 
-const ChildrenComponent = ({ value, currentUserName, roomId, TypeOfNode }) => {
+const ChildrenComponent = ({ value, currentUserName, roomId, TypeOfNode,toggleMinimize }) => {
 
     
 
@@ -14,23 +14,27 @@ const ChildrenComponent = ({ value, currentUserName, roomId, TypeOfNode }) => {
     return (
        
         <DraggableComponent handle=".dragging">
+           
                     {(() => {
                         if (TypeOfNode === "Text") {
                             return <TextComponent
                             value={value}
                             currentUserName={currentUserName}
-                            roomId={roomId}/>
+                            roomId={roomId}
+                            toggleMinimize = {toggleMinimize}/>
                         } else if (TypeOfNode === "Code") {
                             return <CodeComponent
                             value={value}
                             currentUserName={currentUserName}
-                            roomId={roomId} />
+                            roomId={roomId}
+                            toggleMinimize = {toggleMinimize} />
                         }
                         else {
                             return <DrawingComponent
                             value={value}
                             currentUserName={currentUserName}
-                            roomId={roomId} />
+                            roomId={roomId}
+                            toggleMinimize = {toggleMinimize} />
                         }
                     })()}
         </DraggableComponent>

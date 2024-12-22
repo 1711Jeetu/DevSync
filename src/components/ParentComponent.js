@@ -9,8 +9,8 @@ import DropdownButton from 'react-bootstrap/DropdownButton';
 const ParentComponent = ({ children}) => {
   return (
     
-    <div>    
-      <div>{children}</div>
+    <div className="parent-component">    
+      {children}
     </div>
   );
 };

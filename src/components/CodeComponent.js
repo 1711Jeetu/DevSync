@@ -2,20 +2,28 @@ import React, { useRef, useState } from "react";
 import { ref, set, remove } from "firebase/database";
 import { database } from "../utils/firebaseConfig";
 import axios from "axios";
-import { Avatar } from "@mui/material";
 import { Editor } from "@monaco-editor/react";
 import { FormGroup, FormControlLabel } from "@mui/material";
 import MaterialUISwitch from "./CustomizedSwitch";
 import Tooltip from '@mui/material/Tooltip';
+import LongMenu from "./Dropdown";
 
 
-function CodeComponent({ value, currentUserName, roomId }) {
+function CodeComponent({ value, currentUserName, roomId ,toggleMinimize}) {
     const editorRef = useRef(null);
     const [language, setLanguage] = useState("python");
     const [output, setOutput] = useState("");
     const [theme, setTheme] = useState("vs-dark");
     const [isSettingsOpen, setIsSettingsOpen] = useState(false);
     const iscreater = value.creater === currentUserName;
+    const menuItems = [
+        { name: "copy", value: <i className="fa-solid fa-copy fa-lg"></i>,onClick: () => handleCopy() },
+        { name: "lock", value: value.locked ? (
+          <i className="fa-solid fa-lock fa-lg"></i>
+        ) : (
+          <i className="fa-solid fa-lock-open fa-lg"></i>
+        ),onClick:() => toggleLock() }
+    ];
 
     const languageSettings = {
         python: { fileName: 'main.py', version: '3.10.0' },
@@ -32,7 +40,7 @@ function CodeComponent({ value, currentUserName, roomId }) {
     const handleEditorChange = () => {
         
         const windowRef = ref(database, `rooms/${roomId}/windows/${value.id}`);
-        set(windowRef, { id: value.id, content: editorRef.current.getValue(), creater: value.creater, locked: value.locked, typeOfNode: value.typeOfNode });
+        set(windowRef, { id: value.id, content: editorRef.current.getValue(), creater: value.creater, locked: value.locked, typeOfNode: value.typeOfNode, title: value.title });
     }
 
     const handleDelete = async (e) => {
@@ -63,7 +71,7 @@ function CodeComponent({ value, currentUserName, roomId }) {
         }
 
         const windowRef = ref(database, `rooms/${roomId}/windows/${value.id}`);
-        set(windowRef, { id: value.id, content: value.content.content, creater: value.creater, locked: !value.locked, typeOfNode: value.typeOfNode });
+        set(windowRef, { id: value.id, content: value.content.content, creater: value.creater, locked: !value.locked, typeOfNode: value.typeOfNode, title: value.title });
     };
 
     const handleCopy = () => {
@@ -103,51 +111,42 @@ function CodeComponent({ value, currentUserName, roomId }) {
         setTheme(event.target.checked ? "vs-dark" : "light");
     };
 
+    const handleTitleChange = (event) =>{
+        const windowRef = ref(database, `rooms/${roomId}/windows/${value.id}`);
+        set(windowRef, { id: value.id, content: value.content.content, creater: value.creater, locked: !value.locked, typeOfNode: value.typeOfNode, title: event.target.firstChild.textContent });
+    }
+
     return (
-        <div className="card resizable-card border-0">
+        <div className="resizable-card ">
     <div className="card-body">
         {/* Header Section */}
         <div className="card-header">
             {/* Left Section: User Info and Switch */}
-            <div className="user-info">
-                
-                <Avatar />
-                <span id="userId" className="user-name">{value?.creater}</span>
-                
-                {/* Dark Mode Switch */}
-                
+            <Tooltip title="Drag">
+                <div className="dragging" style={{display:"inline-block",marginRight:"10px"}}>
+                <i className="fa-solid fa-arrows-up-down-left-right fa-lg"></i>
+                </div>
+            </Tooltip>
+            <div className="user-info" contentEditable onBlur={handleTitleChange}>
+                <span>{value?.title}</span> 
             </div>
 
             {/* Right Section: Buttons */}
             <div className="action-buttons">
-            <Tooltip title="Drag">
-                <div className="dragging" style={{display:"inline-block",marginRight:"10px"}}>
-                <i className="fa-solid fa-arrows-up-down-left-right fa-xl"></i>
-                </div>
+            
+            <Tooltip title="Minimize">
+            <button onClick={toggleMinimize}>
+              <i className="fa-solid fa-window-minimize"></i>
+            </button>
             </Tooltip>
-                 <Tooltip title="Delete">
-                 <button onClick={handleDelete}>
-                    <i className="fa-solid fa-trash fa-xl" ></i>
-                </button>
-                 </Tooltip>
-                
-                <Tooltip title="copy to clipboard">
-                <button onClick={handleCopy}>
-                    <i className="fa-solid fa-copy fa-xl"></i>
-                </button>
+           
+            <Tooltip title="Delete">
+              <button onClick={handleDelete}>
+                <i className="fa-solid fa-trash fa-lg"></i>
+              </button>
+            </Tooltip>
 
-                </Tooltip>
-                
-                <Tooltip title="Lock Window">
-                <button onClick={toggleLock}>
-                    {value.locked ? (
-                        <i className="fa-solid fa-lock fa-lg"></i>
-                    ) : (
-                        <i className="fa-solid fa-lock-open fa-lg"></i>
-                    )}
-                </button>
-
-                </Tooltip>
+<LongMenu menuItems={menuItems}/>
                 
             </div>
         </div>
@@ -166,8 +165,10 @@ function CodeComponent({ value, currentUserName, roomId }) {
                     <option value="c">C</option>
                 </select>
                 <FormControlLabel
+                className="theme-switch"
                     control={
                         <MaterialUISwitch
+                        
                             checked={theme === "vs-dark"}
                             onChange={handleThemeChange}
                         />
@@ -175,15 +176,9 @@ function CodeComponent({ value, currentUserName, roomId }) {
                     label="Theme"
                 />
                 <button
+                className="run-button"
                     onClick={executeCode}
-                    style={{
-                        border: "none",
-                        backgroundColor: "transparent",
-                        float: "right",
-                        marginRight: "4px",
-                        marginBottom: "4px",
-                        color: "rgb(49, 150, 38)",
-                    }}
+                 
                 >
                     <i className="fa-solid fa-play fa-xl"></i>
                 </button>
@@ -200,6 +195,9 @@ function CodeComponent({ value, currentUserName, roomId }) {
                 onMount={handleEditorDidMount}
                 options={{
                     readOnly: !iscreater && value.locked, // Makes the editor read-only for non-creators when locked
+                    fontSize: 16,
+                    fontFamily: 'Consolas',
+                    lineHeight:1.5,
                 }}
             />
             

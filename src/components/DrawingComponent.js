@@ -70,7 +70,7 @@ const DrawingComponent = ({ value, currentUserName,roomId }) => {
     <div className="card resizable-card border-0">
     <div className="card-body">
         <div className="mb-2">
-            <strong style={{ display: "inline-block" }}><Avatar /></strong> <span id="userId" style={{ position: "relative", top: "-10px", left: "4px" }}>{value?.creater}</span>
+            <strong style={{ display: "inline-block" }}><Avatar /></strong> <span id="userId" style={{ position: "relative", top: "-10px", left: "4px" }}>{value?.title}</span>
             <button onClick={(e) => {
                 handleDelete(e);
             }
