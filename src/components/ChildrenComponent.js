@@ -1,8 +1,5 @@
-import React, { useRef, useState } from "react";
-import DraggableComponent from "./DraggableComponent";
-import DrawingComponent from "./DrawingComponent"; 
-import TextComponent from "./TextComponent";
-import CodeComponent from "./CodeComponent";
+import { CodeEditor } from "./CodeEditor";
+import { Text } from "./Window";
 
 
 
@@ -13,31 +10,31 @@ const ChildrenComponent = ({ value, currentUserName, roomId, TypeOfNode,toggleMi
 
     return (
        
-        <DraggableComponent handle=".dragging">
+       
            
-                    {(() => {
+                    (() => {
                         if (TypeOfNode === "Text") {
-                            return <TextComponent
+                            return <Text
                             value={value}
                             currentUserName={currentUserName}
                             roomId={roomId}
                             toggleMinimize = {toggleMinimize}/>
                         } else if (TypeOfNode === "Code") {
-                            return <CodeComponent
+                            return <CodeEditor
                             value={value}
                             currentUserName={currentUserName}
                             roomId={roomId}
                             toggleMinimize = {toggleMinimize} />
                         }
-                        else {
-                            return <DrawingComponent
-                            value={value}
-                            currentUserName={currentUserName}
-                            roomId={roomId}
-                            toggleMinimize = {toggleMinimize} />
-                        }
-                    })()}
-        </DraggableComponent>
+                        // else {
+                        //     return <DrawingComponent
+                        //     value={value}
+                        //     currentUserName={currentUserName}
+                        //     roomId={roomId}
+                        //     toggleMinimize = {toggleMinimize} />
+                        // }
+                    })()
+        
     );
 };
 

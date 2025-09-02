@@ -5,16 +5,14 @@ import { generateUsername } from "../utils/usernameGenerator";
 import RoomManager from "./RoomManager";
 import ParentComponent from "./ParentComponent";
 import ChildrenComponent from "./ChildrenComponent";
-import "../App.css"
 import Button from '@mui/material/Button';
-import Dropdown from 'react-bootstrap/Dropdown';
-import DropdownButton from 'react-bootstrap/DropdownButton';
 import Box from '@mui/material/Box';
 import Modal from '@mui/material/Modal';
 import Sidebar from "./Sidebar";
 import TextField from '@mui/material/TextField';
 import ButtonGroup from '@mui/material/ButtonGroup';
 import LongMenu from "./Dropdown";
+import '../App.css'
 
 function App() {
 

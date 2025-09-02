@@ -113,7 +113,6 @@ function TextComponent({ value, currentUserName, roomId,toggleMinimize }) {
             onChange={handleTextChange}
             readOnly={!isCreator && value.locked} // Disable editing if locked or not the creator
             className="textarea-editor"
-            
             style={{
               
             }}
