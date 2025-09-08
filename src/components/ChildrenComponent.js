@@ -1,5 +1,5 @@
-import { CodeEditor } from "./CodeEditor";
-import { Text } from "./Window";
+import  {Code}  from "./CodeEditor";
+import  Text  from "./text";
 
 
 
@@ -20,7 +20,7 @@ const ChildrenComponent = ({ value, currentUserName, roomId, TypeOfNode,toggleMi
                             roomId={roomId}
                             toggleMinimize = {toggleMinimize}/>
                         } else if (TypeOfNode === "Code") {
-                            return <CodeEditor
+                            return <Code
                             value={value}
                             currentUserName={currentUserName}
                             roomId={roomId}
