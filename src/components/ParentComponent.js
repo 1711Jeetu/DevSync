@@ -4,7 +4,7 @@ import React from "react";
 
 
 
-const ParentComponent = ({ children}) => {
+const ParentComponent = ({ children, cursors}) => {
   return (
     
     <div className="parent-component">    

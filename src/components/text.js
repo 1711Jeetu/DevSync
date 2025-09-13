@@ -1,13 +1,42 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo,useRef } from 'react';
 import withWindowLogic from './withWindowLogic';
 import { ref, set, remove } from "firebase/database";
 import { database } from "../utils/firebaseConfig";
 import styles from './Window.module.css';
-import { Copy, Minimize2, Trash2, Lock, GripHorizontal } from 'lucide-react';
+import { Copy, Minimize2, Trash2, Lock, GripHorizontal,MousePointer2 } from 'lucide-react';
+import { socket } from '../utils/Socket';
+import throttle from 'lodash.throttle';
 
-const TextComponent = ({ value, currentUserName, roomId, toggleMinimize, isCreator, handleCopy, handleDelete, handleTitleChange, toggleLock }) => {
+
+const TextComponent = ({ value, currentUserName, roomId, toggleMinimize, isCreator, handleCopy, handleDelete, handleTitleChange, toggleLock,cursors }) => {
 
   const [textContent, setTextContent] = useState(value?.content?.content || "");
+  const windowRef = useRef(null)
+const handleMouseMove = (e) => {
+    // Check if the ref is attached to an element
+    if (!windowRef.current) return;
+    console.log(windowRef.current)
+
+    const { left, top } = windowRef.current.getBoundingClientRect();
+    const x = e.clientX - left;
+    const y = e.clientY - top;
+
+    throttledEmit({
+      roomId,
+      userId: currentUserName,
+      windowId: value.id,
+      x,
+      y,
+    });
+  };
+    const throttledEmit = useMemo(
+    () =>
+      throttle((data) => {
+        console.log(data)
+        socket.emit('cursor:move', data);
+      }, 50),
+    [roomId, currentUserName, value.id] // Dependencies for the throttled function
+  );
 
   const handleTextChange = (e) => {
     const content = e.target.value;
@@ -26,9 +55,12 @@ const TextComponent = ({ value, currentUserName, roomId, toggleMinimize, isCreat
 
   return (
     <div
+      ref={windowRef}
+      onMouseMove={handleMouseMove}
       className={styles.window}
     >
       <div
+        
         className={styles.titleBar}
       >
         <GripHorizontal className={`${styles.dragHandle} drag-handle`} size={16} />
@@ -64,6 +96,26 @@ const TextComponent = ({ value, currentUserName, roomId, toggleMinimize, isCreat
           </button>
         </div>
       </div>
+      {Object.entries(cursors).map(([userId, { x, y, windowId }]) => {
+        // Only render cursor if it belongs to the current window
+        if (windowId !== value.id) return null;
+
+        return (
+          <div
+            key={userId}
+            className="cursor"
+            style={{
+              position: 'absolute',
+              left: `${x}px`,
+              top: `${y}px`,
+            }}
+          >
+            {/* Optional: display the user's name */}
+            <span style={{ marginLeft: '15px' }}><MousePointer2 fill='black'/></span>
+          </div>
+        );
+      })}
+
 
       <textarea
         className={styles.textarea}

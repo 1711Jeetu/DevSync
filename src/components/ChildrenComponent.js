@@ -3,7 +3,7 @@ import  Text  from "./text";
 
 
 
-const ChildrenComponent = ({ value, currentUserName, roomId, TypeOfNode,toggleMinimize }) => {
+const ChildrenComponent = ({ value, currentUserName, roomId, TypeOfNode,toggleMinimize ,cursors}) => {
 
     
 
@@ -18,7 +18,8 @@ const ChildrenComponent = ({ value, currentUserName, roomId, TypeOfNode,toggleMi
                             value={value}
                             currentUserName={currentUserName}
                             roomId={roomId}
-                            toggleMinimize = {toggleMinimize}/>
+                            toggleMinimize = {toggleMinimize}
+                            cursors = {cursors}/>
                         } else if (TypeOfNode === "Code") {
                             return <Code
                             value={value}

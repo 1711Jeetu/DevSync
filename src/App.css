@@ -28,6 +28,16 @@ body {
     cursor: move;
   
 }
+/* Add this to your App.css */
+.cursor {
+  position: absolute;
+  /* Add styling for your cursor, like a pointer icon */
+  width: 20px;
+  height: 20px;
+  background: url('../public/cursor.png');
+  pointer-events: none; /* So it doesn't interfere with mouse events */
+  z-index: 9999;
+}
 
 
 /* Resizable Card */

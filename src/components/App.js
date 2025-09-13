@@ -13,6 +13,7 @@ import TextField from '@mui/material/TextField';
 import ButtonGroup from '@mui/material/ButtonGroup';
 import LongMenu from "./Dropdown";
 import '../App.css'
+import { socket } from "../utils/Socket";
 
 function App() {
 
@@ -34,6 +35,27 @@ function App() {
         { name: "Room ID", value: roomId },
         { name: "Exit", value: "Exit", onClick: () => handleExit() }
     ];
+    const [cursors,setCursors] = useState({});
+
+    useEffect(() => {
+        if(roomId){
+            socket.connect();
+            socket.emit('joinRoom',roomId);
+
+            socket.on('cursor-update',(data) => {
+                console.log(data);
+                const { userId, x, y, windowId } = data;
+                setCursors(prevCursors => ({
+                    ...prevCursors,
+                    [userId] : {x,y,windowId}
+                }));
+            });
+        }
+        return () => {
+            socket.off("cursor-update");
+            socket.disconnect();
+        }
+    },[roomId])
 
 
     useEffect(() => {
@@ -202,7 +224,7 @@ function App() {
                             <Sidebar isOpen={sidebarOpen} windows={window} onRestore={restoreWindow} toggleSidebar={toggleSidebar}/>
 
 
-                            <ParentComponent >
+                            <ParentComponent cursors = {cursors}>
                                 {childrenData.filter((data) => !minimizedWindows.includes(data.id))
                                     .map((data) => (
                                         <ChildrenComponent
@@ -212,6 +234,7 @@ function App() {
                                             roomId={roomId}
                                             TypeOfNode={data.typeOfNode}
                                             toggleMinimize={() => toggleMinimizeWindow(data.id)}
+                                            cursors = {cursors}
                                         />
                                     ))}
                             </ParentComponent>
