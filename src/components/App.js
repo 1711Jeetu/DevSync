@@ -1,7 +1,4 @@
 import React, { useState, useEffect } from "react";
-import { database } from "../utils/firebaseConfig";
-import { ref, push, onValue, get, off, set } from "firebase/database";
-import { generateUsername } from "../utils/usernameGenerator";
 import RoomManager from "./RoomManager";
 import ParentComponent from "./ParentComponent";
 import ChildrenComponent from "./ChildrenComponent";
@@ -14,6 +11,7 @@ import ButtonGroup from '@mui/material/ButtonGroup';
 import LongMenu from "./Dropdown";
 import '../App.css'
 import { socket } from "../utils/Socket";
+import axios from "axios";
 
 function App() {
 
@@ -38,92 +36,58 @@ function App() {
     const [cursors,setCursors] = useState({});
 
     useEffect(() => {
-        if(roomId){
+        // Only connect if we have both a room and a user
+        if (roomId && username) {
             socket.connect();
-            socket.emit('joinRoom',roomId);
+            socket.emit('joinRoom', roomId);
+            socket.emit('registerUsername', { roomId, username });
 
-            socket.on('cursor-update',(data) => {
-                console.log(data);
+            // Listener for cursor updates
+            socket.on('cursor:update', (data) => {
                 const { userId, x, y, windowId } = data;
                 setCursors(prevCursors => ({
                     ...prevCursors,
-                    [userId] : {x,y,windowId}
+                    [userId]: { x, y, windowId }
                 }));
             });
+
+            // Listener for initial window data
+            socket.on('windows:load', (windowsData) => {
+                const parsedData = windowsData ? Object.values(windowsData) : [];
+                console.log(parsedData);
+                setChildrenData(parsedData);
+                setWindows(parsedData.map(w => ({ id: w.id, title: w.title })));
+            });
+
+            // Listener for real-time window updates
+            socket.on('windows:update', (windowsData) => {
+                const parsedData = windowsData ? Object.values(windowsData) : [];
+                setChildrenData(parsedData);
+                setWindows(parsedData.map(w => ({ id: w.id, title: w.title })));
+            });
         }
+
+        // Cleanup function: This runs when the component unmounts or dependencies change
         return () => {
-            socket.off("cursor-update");
+            socket.off("cursor:update");
+            socket.off('windows:load');
+            socket.off('windows:update');
             socket.disconnect();
         }
-    },[roomId])
+    }, [roomId, username]); 
+
 
 
     useEffect(() => {
-        // Generate a username if it doesn't exist
+        const storedRoomId = localStorage.getItem("roomId");
         const storedUsername = localStorage.getItem("username");
-        if (storedUsername) {
+        if (storedRoomId && storedUsername) {
+            setRoomId(storedRoomId);
             setUsername(storedUsername);
-        } else {
-            const newUsername = generateUsername();
-            setUsername(newUsername);
-            localStorage.setItem("username", newUsername); // Persist in local storage
         }
-    }, [roomId]);
+    }, []);
+    
 
-    useEffect(() => {
-        const storedRoomId = localStorage.getItem("roomId");
-        if (storedRoomId) {
-            setRoomId(storedRoomId)
-        }
-        if (!roomId) return;
-        const fetchData = async () => {
-            try {
-                const snapshot = await get(ref(database, `rooms/${roomId}/windows`));
-                const data = snapshot.val();
-                if (data) {
-                    const parsedData = Object.entries(data).map(([id, value]) => ({
-                        id, content: { content: value.content },
-                        creater: value.creater, locked: value.locked, typeOfNode: value.typeOfNode, title: value.title
-                    }));
-                    setChildrenData(parsedData);
-
-
-                }
-            } catch (error) {
-                console.error("Error fetching data: ", error);
-            }
-        };
-        fetchData();
-    }, [roomId]);
-
-    useEffect(() => {
-        const storedRoomId = localStorage.getItem("roomId");
-        if (storedRoomId) {
-            setRoomId(storedRoomId)
-        }
-        if (!roomId) return;
-        const windowRef = ref(database, `rooms/${roomId}/windows`);
-
-        const unsubscribe = onValue(windowRef, (snapshot) => {
-            const data = snapshot.val();
-            if (data) {
-                const parsedData = Object.entries(data).map(([id, value]) => ({
-                    id, content: { content: value.content },
-                    creater: value.creater, locked: value.locked, typeOfNode: value.typeOfNode, title: value.title
-                }));
-                setChildrenData(parsedData);
-
-                const windows = Object.entries(data).map(([id, value]) => ({
-                    id,title:value.title
-                }));
-                setWindows(windows);
-
-
-            }
-        });
-
-        return () => off(windowRef);
-    }, [roomId]);
 
     function createWindow(node) {
         if (!roomId) {
@@ -134,18 +98,28 @@ function App() {
             alert("Please enter a title for the window.");
             return;
         }
-        const windowRef = ref(database, `rooms/${roomId}/windows`);
-        const newWindowRef = push(windowRef);
-        const newWindowData = { id: newWindowRef.key, title: title, content: "", creater: username, locked: true, typeOfNode: node };
-        set(newWindowRef, newWindowData);
+
+        const newWindowData = { title: title, content: "", creater: username, locked: true, typeOfNode: node };
+        socket.emit('window:create', newWindowData);
         handleClose();
 
     };
 
-    const handleRoomJoin = (selectedRoomId) => {
-        setRoomId(selectedRoomId);
-        localStorage.setItem("roomId", selectedRoomId);
+    const handleRoomJoin = async (selectedRoomId) => {
+        try {
+            const response = await axios.post('http://localhost:4000/api/username', { roomId: selectedRoomId });
+            const newUsername = response.data.username;
+            
+            localStorage.setItem("roomId", selectedRoomId);
+            localStorage.setItem("username", newUsername);
+
+            setRoomId(selectedRoomId);
+            setUsername(newUsername);
+        } catch (error) {
+            console.error("Failed to fetch username for new room:", error);
+        }
     };
+
     const toggleSidebar = () => {
         setSidebarOpen(!sidebarOpen);
     };
@@ -162,9 +136,11 @@ function App() {
     };
 
     const handleExit = () => {
-        setRoomId(null);
         localStorage.removeItem("roomId");
-    }
+        localStorage.removeItem("username");
+        setRoomId('');
+        setUsername('');
+    };
 
 
 

@@ -1,21 +1,20 @@
-import React, { useState, useMemo,useRef } from 'react';
+import React, { useState, useMemo, useRef, useCallback } from 'react';
 import withWindowLogic from './withWindowLogic';
-import { ref, set, remove } from "firebase/database";
-import { database } from "../utils/firebaseConfig";
 import styles from './Window.module.css';
-import { Copy, Minimize2, Trash2, Lock, GripHorizontal,MousePointer2 } from 'lucide-react';
+import { Copy, Minimize2, Trash2, Lock, GripHorizontal, MousePointer2 } from 'lucide-react';
 import { socket } from '../utils/Socket';
 import throttle from 'lodash.throttle';
+import debounce from 'lodash.debounce';
 
 
-const TextComponent = ({ value, currentUserName, roomId, toggleMinimize, isCreator, handleCopy, handleDelete, handleTitleChange, toggleLock,cursors }) => {
+const TextComponent = ({ value, currentUserName, roomId, toggleMinimize, isCreator, handleCopy, handleDelete, handleTitleChange, toggleLock, cursors }) => {
 
-  const [textContent, setTextContent] = useState(value?.content?.content || "");
+  const [textContent, setTextContent] = useState(value?.content || "");
   const windowRef = useRef(null)
-const handleMouseMove = (e) => {
+  const handleMouseMove = (e) => {
     // Check if the ref is attached to an element
     if (!windowRef.current) return;
-    console.log(windowRef.current)
+
 
     const { left, top } = windowRef.current.getBoundingClientRect();
     const x = e.clientX - left;
@@ -29,28 +28,38 @@ const handleMouseMove = (e) => {
       y,
     });
   };
-    const throttledEmit = useMemo(
+  const throttledEmit = useMemo(
     () =>
       throttle((data) => {
-        console.log(data)
+
         socket.emit('cursor:move', data);
       }, 50),
     [roomId, currentUserName, value.id] // Dependencies for the throttled function
   );
 
+  const debouncedUpdate = useCallback(
+    debounce((newContent) => {
+      socket.emit('window:update', {
+      windowId: value.id,
+      content: {
+        id: value.id,
+        content: newContent,
+        creater: value.creater,
+        locked: value.locked,
+        typeOfNode: value.typeOfNode,
+        title: value.title
+      }
+    });
+    }, 500), // 500ms delay
+    [] // Empty dependency array means this function is created only once
+  );
+
   const handleTextChange = (e) => {
     const content = e.target.value;
     setTextContent(content);
+    console.log(content);
+    debouncedUpdate(content);
 
-    const windowRef = ref(database, `rooms/${roomId}/windows/${value.id}`);
-    set(windowRef, {
-      id: value.id,
-      content: content,
-      creater: value.creater,
-      locked: value.locked,
-      typeOfNode: value.typeOfNode,
-      title: value.title
-    });
   };
 
   return (
@@ -60,7 +69,7 @@ const handleMouseMove = (e) => {
       className={styles.window}
     >
       <div
-        
+
         className={styles.titleBar}
       >
         <GripHorizontal className={`${styles.dragHandle} drag-handle`} size={16} />
@@ -111,7 +120,7 @@ const handleMouseMove = (e) => {
             }}
           >
             {/* Optional: display the user's name */}
-            <span style={{ marginLeft: '15px' }}><MousePointer2 fill='black'/></span>
+            <span style={{ marginLeft: '15px' }}><MousePointer2 fill='black' /></span>
           </div>
         );
       })}
@@ -119,7 +128,7 @@ const handleMouseMove = (e) => {
 
       <textarea
         className={styles.textarea}
-        value={value?.content?.content}
+        value={textContent}
         onChange={handleTextChange}
         disabled={!isCreator && value.locked}
         placeholder='Start Writing'

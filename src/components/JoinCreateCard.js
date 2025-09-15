@@ -1,11 +1,10 @@
 import React, { useState } from "react";
-import { database } from "../utils/firebaseConfig";
-import { ref, set, get, child } from "firebase/database";
 import styles from "./RoomManager.module.css";
 import {
   Button,
   TextField,
 } from "@mui/material";
+import api from "../utils/api";
 
 const JoinCreateCard = ({ onRoomJoin, type }) => {
   const [roomId, setRoomId] = useState("");
@@ -14,21 +13,35 @@ const JoinCreateCard = ({ onRoomJoin, type }) => {
   const [newPassword, setNewPassword] = useState("");
 
   const handleJoinRoom = async () => {
-    const dbRef = ref(database);
-    const roomSnapshot = await get(child(dbRef, `rooms/${roomId}`));
-    if (roomSnapshot.exists() && roomSnapshot.val().password === password) {
+    if (!roomId || !password) {
+      alert("Please enter a Room ID and password.");
+      return;
+    }
+    try {
+      // 1. Ask the backend to validate the room credentials
+      await api.post('/rooms/join', { roomId, password });
+      // 2. If validation is successful, call onRoomJoin, which will create the user session
       onRoomJoin(roomId);
-    } else {
-      alert("Invalid room ID or password");
+    } catch (error) {
+      console.error("Error joining room:", error);
+      alert(error.response?.data?.error || "Failed to join room.");
     }
   };
 
   const handleCreateRoom = async () => {
-    await set(ref(database, `rooms/${newRoomId}`), {
-      password: newPassword,
-      windows: {},
-    });
-    onRoomJoin(newRoomId);
+    if (!newRoomId || !newPassword) {
+      alert("Please enter a new Room ID and password.");
+      return;
+    }
+    try {
+      // 1. Ask the backend to create the new room
+      await api.post('/rooms/create', { roomId: newRoomId, password: newPassword });
+      // 2. If creation is successful, join the new room
+      onRoomJoin(newRoomId);
+    } catch (error) {
+      console.error("Error creating room:", error);
+      alert(error.response?.data?.error || "Failed to create room.");
+    }
   };
 
   if (type === "Join") {

@@ -1,11 +1,11 @@
-import React, { useRef, useState } from "react";
-import { ref, set } from "firebase/database";
-import { database } from "../utils/firebaseConfig";
+import React, { useRef, useState,useCallback } from "react";
 import { Editor } from "@monaco-editor/react";
 import { Play, Copy, Lock, Minimize2, GripHorizontal, Trash2 } from 'lucide-react';
 import styles from './CodeEditor.module.css';
 import axios from "axios";
 import withWindowLogic from "./withWindowLogic";
+import { socket } from "../utils/Socket";
+import debounce from 'lodash.debounce';
 
 const SUPPORTED_LANGUAGES = [
   'python',
@@ -36,10 +36,25 @@ const CodeEditor = ({
     editorRef.current = editor;
   };
 
-  const handleEditorChange = () => {
+    const debouncedUpdate = useCallback(
+      debounce((newContent) => {
+        socket.emit('window:update', {
+        windowId: value.id,
+        content: {
+          id: value.id,
+          content: newContent,
+          creater: value.creater,
+          locked: value.locked,
+          typeOfNode: value.typeOfNode,
+          title: value.title
+        }
+      });
+      }, 500), // 500ms delay
+      [] // Empty dependency array means this function is created only once
+    );
 
-    const windowRef = ref(database, `rooms/${roomId}/windows/${value.id}`);
-    set(windowRef, { id: value.id, content: editorRef.current.getValue(), creater: value.creater, locked: value.locked, typeOfNode: value.typeOfNode, title: value.title });
+  const handleEditorChange = () => {
+    debouncedUpdate(editorRef.current.getValue());
   }
 
   const executeCode = async () => {
@@ -142,7 +157,7 @@ const CodeEditor = ({
         <div className={styles.editorContainer}>
           <Editor
             language={language}
-            value={value?.content?.content}
+            value={value?.content}
             theme={isDark ? 'vs-dark' : 'light'}
             onChange={handleEditorChange}
             onMount={handleEditorDidMount}

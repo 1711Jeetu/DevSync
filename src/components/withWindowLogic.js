@@ -1,7 +1,6 @@
 import React,{useState} from "react";
-import {ref,set,remove} from "firebase/database";
-import {database} from "../utils/firebaseConfig";
 import DraggableComponent from "./DraggableComponent";
+import { socket } from '../utils/Socket';
 
 const withWindowLogic = (WindowedComponent) => {
     return (props) => {
@@ -19,8 +18,7 @@ const withWindowLogic = (WindowedComponent) => {
                 return;
             }
             try{
-                const windowRef = ref(database, `rooms/${roomId}/windows/${value.id}`);
-                await remove(windowRef);
+                socket.emit('window:delete', { roomId, windowId: value.id });
             } catch(error){
                 console.error("Error deleting card: ", error);
                 alert("Failed to delete the card.");
@@ -32,22 +30,29 @@ const withWindowLogic = (WindowedComponent) => {
                 alert("you cannot delete this window");
                 return;
             }
-            const windowRef = ref(database, `rooms/${roomId}/windows/${value.id}`);
-            set(windowRef, {
+            socket.emit('window:update', {windowId: value.id, 
+            content: {
                 id: value.id,
-                content: value?.content?.content,
+                content: value?.content,
                 creater: value.creater,
                 locked: !value.locked,
                 typeOfNode: value.typeOfNode,
-                title: value.title    
-            });
+                title: value.title
+            }});
+
         };
 
         const handleTitleChange = (event) => {
             setTitle(event.target.firstChild.textContent);
-            const windowRef = ref(database, `rooms/${roomId}/windows/${value.id}`);
-            set(windowRef, { id: value.id, content: value.content.content, creater: value.creater, locked: !value.locked, typeOfNode: value.typeOfNode, title: event.target.firstChild.textContent });
-
+            socket.emit('window:update', {windowId: value.id, 
+            content: {
+                id: value.id,
+                content: value?.content,
+                creater: value.creater,
+                locked: value.locked,
+                typeOfNode: value.typeOfNode,
+                title: event.target.firstChild.textContent
+            }});
         };
         return (
             <DraggableComponent handle=".drag-handle">
