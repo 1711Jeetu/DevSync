@@ -15,10 +15,16 @@ function initializeSocket(server) {
 
   // Central Redis listener
   RedisSubscriber.on('message', (channel, message) => {
-    if (channel.startsWith('cursor-updates:')) {
-      const roomId = channel.split(':')[1];
-      const data = JSON.parse(message);
-      io.to(roomId).except(data.senderId).emit(`cursor-update`,data);
+    try {
+      // Expecting channels like 'cursor-update:<roomId>'
+      if (channel.startsWith('cursor-update:')) {
+        const roomId = channel.split(':')[1];
+        const data = JSON.parse(message);
+        // Emit to everyone in the room except the sender; use a consistent event name
+        io.to(roomId).except(data.senderId).emit('cursor:update', data);
+      }
+    } catch (err) {
+      console.error('Error processing Redis message:', err);
     }
   });
 
