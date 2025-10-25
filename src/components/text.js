@@ -105,7 +105,7 @@ const TextComponent = ({ value, currentUserName, roomId, toggleMinimize, isCreat
           </button>
         </div>
       </div>
-      {Object.entries(cursors).map(([userId, { x, y, windowId }]) => {
+      {Object.entries(cursors).map(([userId, { x, y, windowId, color }]) => {
         // Only render cursor if it belongs to the current window
         if (windowId !== value.id) return null;
 
@@ -117,10 +117,13 @@ const TextComponent = ({ value, currentUserName, roomId, toggleMinimize, isCreat
               position: 'absolute',
               left: `${x}px`,
               top: `${y}px`,
+              zIndex: 9999,
             }}
           >
-            {/* Optional: display the user's name */}
-            <span style={{ marginLeft: '15px' }}><MousePointer2 fill='black' /></span>
+            <div style={{display: 'flex', alignItems: 'center'}}>
+              <MousePointer2 color={color || 'black'} />
+              <div className="label" style={{background: color || '#000', color: '#fff', marginLeft: 6, padding: '2px 6px', borderRadius: 4, fontSize: 12}}>{userId}</div>
+            </div>
           </div>
         );
       })}

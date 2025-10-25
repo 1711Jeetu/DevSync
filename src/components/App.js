@@ -34,6 +34,7 @@ function App() {
         { name: "Exit", value: "Exit", onClick: () => handleExit() }
     ];
     const [cursors,setCursors] = useState({});
+    const [participants, setParticipants] = useState([]);
 
     useEffect(() => {
         // Only connect if we have both a room and a user
@@ -44,11 +45,16 @@ function App() {
 
             // Listener for cursor updates
             socket.on('cursor:update', (data) => {
-                const { userId, x, y, windowId } = data;
+                const { userId, x, y, windowId, color } = data;
                 setCursors(prevCursors => ({
                     ...prevCursors,
-                    [userId]: { x, y, windowId }
+                    [userId]: { x, y, windowId, color }
                 }));
+            });
+
+            // Listener for presence / participants updates
+            socket.on('presence:update', ({ participants }) => {
+                setParticipants(participants || []);
             });
 
             // Listener for initial window data
@@ -70,6 +76,7 @@ function App() {
         // Cleanup function: This runs when the component unmounts or dependencies change
         return () => {
             socket.off("cursor:update");
+            socket.off('presence:update');
             socket.off('windows:load');
             socket.off('windows:update');
             socket.disconnect();
@@ -197,7 +204,7 @@ function App() {
 
 
                         <div className="content">
-                            <Sidebar isOpen={sidebarOpen} windows={window} onRestore={restoreWindow} toggleSidebar={toggleSidebar}/>
+                            <Sidebar isOpen={sidebarOpen} windows={window} participants={participants} onRestore={restoreWindow} toggleSidebar={toggleSidebar}/>
 
 
                             <ParentComponent cursors = {cursors}>
